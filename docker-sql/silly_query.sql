@@ -1,0 +1,2 @@
+SELECT *
+from sys.Databases;

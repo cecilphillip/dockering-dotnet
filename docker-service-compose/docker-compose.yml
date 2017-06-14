@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  rabbit-serivce:
+    image: rabbit
+    build:
+      context: .
+      dockerfile: Dockerfile.rabbitmq
+    hostname: local_rabbit
+    ports:
+      - "15672:15672"
+    networks:
+      - service-network
+  queue-service:
+    image: queue-service
+    build:
+      context: ./src/queue_service
+    depends_on:
+      - rabbit-serivce
+    networks:
+      - service-network
+    restart: unless-stopped
+  service-client:
+    image: service-client
+    build:
+      context: ./src/service_client
+    depends_on:
+      - rabbit-serivce
+    networks:
+      - service-network
+networks:
+  service-network:
+    driver: bridge
